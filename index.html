@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>代码地图合集</title>
+  <style>
+    :root { --ink:#20252c; --muted:#6c737f; --line:#e5e8eb; --paper:#f8fafb; --card:#fff; --blue:#2859d8; --blue-soft:#eef3ff; --green:#0f7b57; --green-soft:#e8f7f0; --amber:#9a6200; --amber-soft:#fff5dd; --red:#b33f45; --red-soft:#fff0f1; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; }
+    .shell { max-width:1180px; margin:auto; padding:32px 20px 64px; }
+    header { display:flex; justify-content:space-between; gap:24px; align-items:flex-start; padding-bottom:25px; border-bottom:1px solid var(--line); }
+    h1,h2,h3,p { margin-top:0; } h1 { font-size:28px; letter-spacing:-.03em; margin-bottom:4px; } h2 { font-size:20px; margin-bottom:6px; } h3 { font-size:16px; margin:0; }
+    .hint,.muted { color:var(--muted); } .hint { max-width:670px; margin-bottom:0; }
+    .primary,.secondary,.danger { border:0; border-radius:9px; padding:10px 14px; font-weight:650; white-space:nowrap; }
+    .primary { color:white; background:var(--blue); } .secondary { color:var(--ink); background:#edf0f3; } .danger { color:var(--red); background:var(--red-soft); }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:24px 0; }
+    .stat { background:var(--card); padding:15px 17px; border-radius:12px; border:1px solid var(--line); }
+    .stat strong { display:block; font-size:24px; } .stat span { color:var(--muted); font-size:13px; }
+    .list-head { display:flex; justify-content:space-between; gap:12px; align-items:center; margin:28px 0 12px; }
+    .tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+    .tool { background:var(--card); border:1px solid var(--line); border-radius:13px; padding:17px; text-align:left; transition:.16s ease; min-height:172px; }
+    .tool:hover,.tool:focus-visible { border-color:var(--blue); box-shadow:0 4px 16px rgba(32,37,44,.08); outline:none; transform:translateY(-1px); }
+    .tool-top { display:flex; justify-content:space-between; gap:8px; align-items:start; margin-bottom:13px; }
+    .tool p { color:var(--muted); margin:5px 0 14px; font-size:14px; }
+    .tag { display:inline-flex; align-items:center; gap:5px; border-radius:99px; padding:3px 8px; font-size:12px; font-weight:650; }
+    .stable { background:var(--green-soft); color:var(--green); } .review { background:var(--amber-soft); color:var(--amber); } .manual { background:var(--red-soft); color:var(--red); }
+    .card-foot { display:flex; justify-content:space-between; color:var(--muted); font-size:12px; }
+    .empty { border:1px dashed #bdc4cc; border-radius:13px; padding:38px 24px; color:var(--muted); text-align:center; background:rgba(255,255,255,.5); }
+    dialog { width:min(700px,calc(100% - 28px)); border:0; border-radius:15px; padding:0; box-shadow:0 24px 70px rgba(20,25,35,.25); }
+    dialog::backdrop { background:rgba(22,28,36,.42); }
+    .dialog-inner { padding:24px; } .dialog-head { display:flex; align-items:start; justify-content:space-between; gap:18px; }
+    .dialog-head p { color:var(--muted); margin-bottom:0; }
+    .close { border:0; background:transparent; color:var(--muted); font-size:25px; line-height:1; padding:0 2px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:22px 0; }
+    label { display:block; font-size:13px; font-weight:650; } input,textarea,select { display:block; width:100%; margin-top:5px; border:1px solid #cbd2d9; border-radius:8px; padding:9px 10px; color:var(--ink); background:white; }
+    textarea { min-height:108px; resize:vertical; } .full { grid-column:1/-1; } .form-actions,.detail-actions { display:flex; justify-content:flex-end; gap:9px; flex-wrap:wrap; }
+    .detail-top { display:flex; justify-content:space-between; align-items:start; gap:14px; margin-bottom:18px; }.detail-top p { margin-bottom:0; color:var(--muted); }
+    .map { background:var(--paper); border-radius:12px; padding:20px 12px; overflow:auto; margin:15px 0 20px; }
+    .map svg { display:block; width:650px; max-width:none; margin:auto; }.edge { stroke:#bfc7d0; stroke-width:2; }.node rect { fill:white; stroke:#cbd2d9; stroke-width:1.4; }.node text { fill:var(--ink); font-size:14px; font-weight:650; text-anchor:middle; dominant-baseline:middle; }.node .small { fill:var(--muted); font-size:11px; font-weight:400; }
+    .module-list { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }.module { border:1px solid var(--line); background:white; border-radius:10px; padding:12px; }.module p { color:var(--muted); font-size:13px; margin:5px 0 0; }.module-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .section-label { font-weight:700; margin:20px 0 8px; }.backlog { border-left:3px solid var(--amber); background:var(--amber-soft); padding:12px; border-radius:0 8px 8px 0; white-space:pre-line; color:#6f4a00; }
+    .small-link { color:var(--blue); font-size:13px; text-decoration:none; }.small-link:hover { text-decoration:underline; }
+    #detail { width:min(1050px,calc(100% - 28px)); }
+    .mapped { background:var(--blue-soft); color:var(--blue); }
+    .atlas-note { margin:12px 0; color:var(--muted); font-size:13px; }
+    .map-policy { margin:18px 0 0; padding:10px 12px; border-left:3px solid var(--blue); background:var(--blue-soft); border-radius:0 8px 8px 0; color:#24499f; font-size:13px; }
+    .maintenance-rules { margin:24px 0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .maintenance-rules > summary { cursor:pointer; font-weight:650; }
+    .maintenance-rules ol { padding-left:24px; }
+    .maintenance-rules li { padding:8px 0; }
+    .maintenance-rules li p { margin:6px 0 0; color:var(--muted); }
+    .maintenance-rules .rule-entry { overflow-wrap:anywhere; padding:12px; background:var(--paper); border-radius:8px; }
+    .history-controls { margin:16px 0; padding:12px; border:1px solid var(--line); border-radius:10px; }
+    .history-controls select { max-width:100%; }
+    .view-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0; }
+    .view-tabs button[aria-pressed="true"] { background:var(--blue); color:white; }
+    .framework-intro { padding:20px; background:var(--blue-soft); border-radius:12px; }
+    .framework-intro p { margin:8px 0 0; }
+    .framework-section { margin:26px 0; }
+    .framework-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+    .framework-pages { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .framework-page { padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+    .framework-page .purpose { margin:6px 0 12px; color:var(--blue); font-weight:650; }
+    .framework-features { margin:0; padding-left:20px; }
+    .framework-features li { margin:6px 0; overflow-wrap:anywhere; }
+    .framework-page .planned-label { margin-left:6px; color:var(--amber); font-size:12px; }
+    .framework-page .small-link { display:inline-block; margin-top:10px; border:0; background:none; padding:0; }
+    .framework-note { margin:12px 0 0; color:var(--muted); font-size:13px; }
+    .source-entry { display:inline-block; margin-top:10px; font-size:13px; color:var(--blue); }
+    @media (max-width:620px) { .framework-pages { grid-template-columns:1fr; } .framework-page { padding:14px; } }
+    .drill-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0; }
+    .drill-module { padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); text-align:left; white-space:normal; }
+    .drill-module[aria-pressed="true"] { border-color:var(--blue); background:var(--blue-soft); }
+    .drill-module strong,.drill-module span { display:block; }
+    .drill-module span { margin-top:7px; color:var(--muted); font-size:13px; }
+    .drill-panel { padding:20px; border:1px solid var(--line); border-radius:12px; }
+    .drill-panel p { margin-bottom:12px; }
+    .connections { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:16px; }
+    .connections button { border:1px solid var(--line); padding:6px 10px; background:var(--paper); color:var(--ink); border-radius:7px; }
+    .feature-row { border-top:1px solid var(--line); padding:13px 0; }
+    .feature-row summary { cursor:pointer; font-weight:650; padding:3px 0; }
+    .feature-row p { margin:8px 0 0; color:var(--muted); }
+    .drill-panel:focus { outline:2px solid var(--blue); outline-offset:3px; }
+    @media (max-width:800px) { .drill-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:400px) { .drill-grid { grid-template-columns:1fr; } .drill-panel { padding:12px; } .dialog-inner { padding:16px; } }
+    @media (max-width:620px) { header { display:block; } header .primary { margin-top:16px; }.summary,.form-grid,.module-list { grid-template-columns:1fr; }.shell { padding:22px 14px 50px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>我的工具代码地图</h1>
+        <p class="hint">把每个已上线的网站工具放在这里。你不用看代码，只看：这个工具有什么功能、模块如何关联、什么地方需要人工确认。</p>
+        <p class="map-policy">发布前规则：项目文件一旦实际修改，必须更新项目根目录的 <code>code-map.json</code>。地图只能记录功能摘要、模块关系、版本、风险和待办；不得写入秘密、个人数据、连接地址或源码。</p>
+      </div>
+      <button class="primary" id="addTool">＋ 添加一个工具</button>
+    </header>
+    <section class="summary" aria-label="工具概况">
+      <div class="stat"><strong id="toolCount">0</strong><span>已建立地图的工具</span></div>
+      <div class="stat"><strong id="reviewCount">0</strong><span>需要下次整理的工具</span></div>
+      <div class="stat"><strong id="manualCount">0</strong><span>有修改提醒或人工确认项的工具</span></div>
+    </section>
+    <div class="list-head"><h2>工具列表</h2><span class="muted" id="listHint">点击任意工具查看地图</span></div>
+    <section class="tool-grid" id="toolGrid" aria-live="polite"></section>
+  </main>
+
+  <dialog id="editor">
+    <form class="dialog-inner" id="toolForm">
+      <div class="dialog-head"><div><h2 id="editorTitle">添加工具</h2><p>先填写你看得懂的业务名称；代码文件名不需要写在这里。</p></div><button class="close" type="button" data-close="editor" aria-label="关闭">×</button></div>
+      <div class="form-grid">
+        <label>工具名称<input required name="name" placeholder="例如：客户预约工具"></label>
+        <label>当前线上版本<input name="version" placeholder="例如：v90"></label>
+        <label class="full">线上网址（可选）<input name="url" type="url" placeholder="https://..." ></label>
+        <label class="full">一句话说明<textarea name="description" placeholder="例如：让客户自行选择时间并提交预约。"></textarea></label>
+        <label>整体状态<select name="status"><option value="mapped">源码已识别</option><option value="stable">稳定</option><option value="review">下次整理</option><option value="manual">人工确认</option></select></label>
+        <label>最近检查日期<input name="checkedAt" type="date"></label>
+        <label class="full">功能模块（一行一个）<textarea required name="modules" placeholder="访客预约 | 用户选择时间并提交预约 | 稳定&#10;登录与权限 | 决定谁能查看和管理预约 | 人工确认&#10;预约数据 | 保存预约信息 | 人工确认"></textarea></label>
+        <label class="full">待办 / 风险（可选）<textarea name="backlog" placeholder="例如：预约修改和取消功能有重复逻辑；先记录，等测试完整再处理。"></textarea></label>
+      </div>
+      <div class="form-actions"><button type="button" class="secondary" data-close="editor">取消</button><button class="primary" type="submit">保存地图</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="detail">
+    <div class="dialog-inner">
+      <div class="detail-top"><div><h2 id="detailName"></h2><p id="detailDesc"></p></div><button class="close" type="button" data-close="detail" aria-label="关闭">×</button></div>
+      <div id="detailMeta"></div>
+      <section class="history-controls" id="historyControls" hidden aria-label="地图历史版本">
+        <label for="mapVersionSelect">查看哪个版本的地图？</label>
+        <select id="mapVersionSelect"></select>
+        <p class="atlas-note" id="historyNotice" aria-live="polite"></p>
+      </section>
+      <div class="view-tabs" id="mapViewTabs" hidden aria-label="地图展示方式">
+        <button type="button" class="secondary" id="showFramework" aria-pressed="true" aria-controls="productFramework">功能框架（展示）</button>
+        <button type="button" class="secondary" id="showMaintenance" aria-pressed="false" aria-controls="maintenanceView">模块与维护（详细）</button>
+      </div>
+      <section id="productFramework" hidden aria-label="网站功能框架"></section>
+      <section id="maintenanceView">
+      <p id="verificationNote" class="atlas-note" hidden></p>
+      <section id="detailedMap" hidden aria-label="逐层展开代码地图">
+        <p class="section-label" id="hierarchyCount"></p>
+        <p class="atlas-note">先选一个业务区域，再展开功能摘要。“会用到”可跳到相关区域。</p>
+        <div class="drill-grid" id="modulePicker"></div>
+        <section class="drill-panel" id="moduleDetail" aria-labelledby="selectedModuleTitle"></section>
+      </section>
+      <div id="legacyMap">
+        <div class="map" aria-label="功能模块关系图"><svg id="mapSvg" viewBox="0 0 650 260" role="img" aria-label="工具功能地图"></svg></div>
+        <div class="section-label">功能清单</div><div class="module-list" id="moduleList"></div>
+      </div>
+      <div class="section-label">待办 / 风险</div><div class="backlog" id="detailBacklog"></div>
+      </section>
+      <div class="detail-actions" style="margin-top:20px"><a class="secondary" id="openUrl" target="_blank" rel="noreferrer" hidden>打开线上工具</a><button class="danger" id="deleteTool">删除这张地图</button><button class="secondary" id="editTool">编辑</button></div>
+    </div>
+  </dialog>
+
+  <script src="product-framework.js"></script>
+  <script src="maps/wuyou-current-detail.js"></script>
+  <script src="maps/attendance-detail.js"></script>
+  <script src="maps/map-history.js"></script>
+  <script>
+    const STORAGE_KEY = 'code-map-atlas-v1';
+    const AUTO_IMPORTED_WUYOU_KEY = 'code-map-atlas-imported-wuyou';
+    const LEGACY_IMPORTED_WUYOU_KEY = 'code-map-atlas-imported-wuyou-v96';
+    const byId = (id) => document.getElementById(id);
+    const exampleTool = {
+      id: crypto.randomUUID(), name: '示例：预约工具', version: 'v90', url: '', description: '让客户选择时间并提交预约。', status: 'review', checkedAt: new Date().toISOString().slice(0,10),
+      modules: [
+        {name:'访客预约', description:'选择时间并提交预约', status:'稳定'},
+        {name:'登录与权限', description:'确认谁可以管理预约', status:'人工确认'},
+        {name:'预约数据', description:'保存和读取预约记录', status:'人工确认'},
+        {name:'通知提醒', description:'发送预约提醒', status:'下次整理'}
+      ], backlog:'预约修改与取消有相似逻辑。先保留记录，等测试完整后再请 AI 评估是否合并。'
+    };
+    const detailedMap = window.CODE_MAP_DETAILS;
+    const isWuyou = tool => detailedMap && [detailedMap.sourceKey, ...(detailedMap.legacySourceKeys || [])].some(key => tool.sourceKey === key || tool.id === key);
+    let tools = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || [exampleTool];
+    if (detailedMap && !localStorage.getItem(AUTO_IMPORTED_WUYOU_KEY)) {
+      if (!tools.some(isWuyou) && !localStorage.getItem(LEGACY_IMPORTED_WUYOU_KEY)) tools.push({
+        id:detailedMap.sourceKey, sourceKey:detailedMap.sourceKey, name:'无忧学堂', url:'', status:'mapped',
+        description:detailedMap.description, modules:[], backlog:''
+      });
+      localStorage.setItem(AUTO_IMPORTED_WUYOU_KEY, '1');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+    }
+    if (detailedMap) {
+      tools = tools.map(tool => {
+        if (!isWuyou(tool)) return tool;
+        if (tool.mapDigest === detailedMap.mapDigest && tool.version === detailedMap.version && tool.checkedAt === detailedMap.checkedAt && tool.stableVersion === detailedMap.stableVersion) return tool;
+        const modules = tool.modules.map(module => {
+          const enriched = detailedMap.groups.find(group => group.name === module.name);
+          return enriched ? {...module, ...enriched, features:[...enriched.features,...(module.features || []).filter(feature => !enriched.features.some(current => current.name === feature.name))], status:'已识别'} : module;
+        });
+        detailedMap.groups.forEach(group => { if (!modules.some(module => module.name === group.name)) modules.push({...group,status:'已识别'}); });
+        const relationships = [...(tool.relationships || [])];
+        detailedMap.groups.forEach(group => group.dependsOn.forEach(from => { if (!relationships.some(pair => pair[0] === from && pair[1] === group.name)) relationships.push([from,group.name]); }));
+        return {...tool, sourceKey:detailedMap.sourceKey, modules, relationships,
+          version:detailedMap.version, checkedAt:detailedMap.checkedAt, stableVersion:detailedMap.stableVersion, releaseState:detailedMap.releaseState,
+          status:tool.status === 'manual' ? 'mapped' : tool.status, mapRevision:detailedMap.mapRevision, mapDigest:detailedMap.mapDigest,
+          verification:detailedMap.verification, mapBacklog:detailedMap.todos.join('\n\n'), mapRisks:detailedMap.risks.join('\n\n')};
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+    }
+    for(const incoming of window.ATLAS_PROJECT_MAPS||[]){
+      const importedKey='code-map-atlas-imported:'+incoming.sourceKey;
+      const existing=tools.find(tool=>tool.sourceKey===incoming.sourceKey);
+      if(existing&&existing.mapDigest!==incoming.mapDigest){
+        const extraModules=existing.modules.filter(module=>!incoming.modules.some(current=>current.name===module.name));
+        const mergedModules=incoming.modules.map(module=>{const old=existing.modules.find(item=>item.name===module.name);return {...old,...module,features:[...module.features,...(old?.features||[]).filter(feature=>!module.features.some(item=>item.name===feature.name))]};});
+        tools=tools.map(tool=>tool===existing?{...tool,...incoming,id:tool.id,name:tool.name,backlog:tool.backlog||'',url:tool.url||'',modules:[...mergedModules,...extraModules]}:tool);
+      }else if(!existing&&!localStorage.getItem(importedKey))tools.push(incoming);
+      localStorage.setItem(importedKey,'1');
+    }
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(tools));
+    let selectedId = null;
+    let displayedTool = null;
+    const statusInfo = { stable:['稳定','stable'], review:['下次整理','review'], manual:['人工确认','manual'], mapped:['源码已识别','mapped'],planned:['待开发','review'] };
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(tools)); }
+    function badge(status){ const [label, cls] = statusInfo[status] || statusInfo.stable; return `<span class="tag ${cls}">${label}</span>`; }
+    function escapeHtml(value=''){ return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function render(){
+      const review = tools.filter(t => t.status === 'review').length;
+      const manual = tools.filter(t => t.status === 'manual' || t.modules.some(m => m.status === '人工确认' || m.attention)).length;
+      byId('toolCount').textContent = tools.length; byId('reviewCount').textContent = review; byId('manualCount').textContent = manual;
+      const grid = byId('toolGrid');
+      if(!tools.length){ grid.innerHTML = '<div class="empty">还没有地图。点击右上角“添加一个工具”，把第一个已上线工具放进来。</div>'; return; }
+      grid.innerHTML = tools.map(t => `<button class="tool" data-id="${escapeHtml(t.id)}"><div class="tool-top"><h3>${escapeHtml(t.name)}</h3>${badge(t.status)}</div><p>${escapeHtml(t.description || '还没有说明。')}</p><div class="card-foot"><span>${escapeHtml(t.version || '未填写版本')}</span><span>${t.modules.length} 个区域${featureCount(t) ? ` · ${featureCount(t)} 项功能` : ''}</span></div></button>`).join('');
+      grid.querySelectorAll('[data-id]').forEach(el => el.addEventListener('click', () => showDetail(el.dataset.id)));
+    }
+    function parseModules(text){ return text.trim().split('\n').filter(Boolean).map(line => { const [name,description,status='稳定'] = line.split('|').map(v => v.trim()); return {name, description, status}; }); }
+    function moduleStatus(text){ return text === '人工确认' ? 'manual' : text === '下次整理' ? 'review' : text === '已识别' ? 'mapped' : text==='待开发'?'planned':'stable'; }
+    function featureCount(tool) { return tool.modules.reduce((total,module)=>total+(module.features?.length||0),0); }
+    function openEditor(id=null){
+      const form = byId('toolForm'); const tool = id ? tools.find(t => t.id === id) : null; form.reset(); byId('editorTitle').textContent = tool ? '编辑工具地图' : '添加工具';
+      if(tool){ for(const key of ['name','version','url','description','status','checkedAt','backlog']) form.elements.namedItem(key).value=tool[key]||''; form.elements.namedItem('modules').value=tool.modules.map(m => `${m.name} | ${m.description} | ${m.status}`).join('\n'); }
+      form.dataset.id = id || ''; byId('editor').showModal();
+    }
+    function showDetail(id,versionChoice){
+      selectedId=id;
+      const current=tools.find(x=>x.id===id);
+      const history=isWuyou(current)?(window.ATLAS_MAP_HISTORY?.snapshots||[]):[];
+      const preferenceKey='code-map-atlas-history-view:'+id;
+      let choice=versionChoice??localStorage.getItem(preferenceKey)??'current';
+      const historical=history.find(item=>item.key===choice);
+      if(!historical)choice='current';
+      if(versionChoice!==undefined)localStorage.setItem(preferenceKey,choice);
+      const t=historical?{...current,...historical,status:'mapped',releaseState:'历史地图，只读',modules:historical.groups.map(group=>({...group,status:'已识别'})),mapBacklog:historical.todos.join('\n\n'),mapRisks:historical.risks.join('\n\n'),backlog:'',relationships:historical.groups.flatMap(group=>group.dependsOn.map(from=>[from,group.name]))}:current;
+      displayedTool=t;
+      renderProductFramework(t);
+      byId('historyControls').hidden=!history.length;
+      byId('mapVersionSelect').innerHTML=`<option value="current">当前地图 · ${escapeHtml(current.version||'未标版本')}</option>`+history.slice().reverse().map(item=>`<option value="${escapeHtml(item.key)}">${escapeHtml(item.version)} · ${escapeHtml(item.checkedAt)} · 历史快照 ${escapeHtml(item.key.slice(-6))}</option>`).join('');
+      byId('mapVersionSelect').value=choice;
+      byId('historyNotice').textContent=historical?`正在查看 ${historical.version} 历史地图（${featureCount(t)} 项功能）。切换只影响当前浏览；项目代码、线上网站和数据库均保持原状。`:'正在查看当前地图。后续同步会保存历史快照；只有实际保留过的版本才能查看。';
+      byId('editTool').disabled=Boolean(historical);
+      byId('deleteTool').disabled=Boolean(historical);
+      byId('detailName').textContent=t.name; byId('detailDesc').textContent=t.description || '还没有说明。';
+      byId('detailMeta').innerHTML=`${badge(t.status)} <span class="muted">&nbsp; ${escapeHtml(t.version || '未填写版本')}${t.releaseState ? `（${escapeHtml(t.releaseState)}）` : ''}${t.stableVersion ? ` · 线上稳定 ${escapeHtml(t.stableVersion)}` : ''} · 最近检查：${escapeHtml(t.checkedAt || '未填写')}</span>`;
+      const open=byId('openUrl'); open.hidden=!t.url; open.href=t.url || '#';
+      const hasDetails=featureCount(t)>0;
+      byId('detailedMap').hidden=!hasDetails;
+      byId('legacyMap').hidden=hasDetails;
+      byId('verificationNote').hidden=!t.verification;
+      byId('verificationNote').textContent=t.verification||'';
+      if(hasDetails){
+        byId('hierarchyCount').textContent=`${t.name} → ${t.modules.length} 个业务区域 → ${featureCount(t)} 项具体功能`;
+        byId('modulePicker').innerHTML=t.modules.map((module,index)=>`<button type="button" class="drill-module" data-module-index="${index}" aria-pressed="false" aria-controls="moduleDetail"><strong>${escapeHtml(module.name)}</strong><span>${module.features?.length||0} 项功能 · ${escapeHtml(module.audience||'')}</span></button>`).join('');
+        byId('modulePicker').querySelectorAll('[data-module-index]').forEach(button=>button.addEventListener('click',()=>selectModule(t,Number(button.dataset.moduleIndex))));
+        selectModule(t,0);
+      }
+      byId('moduleList').innerHTML=t.modules.map(m=>`<div class="module"><div class="module-head"><strong>${escapeHtml(m.name)}</strong>${badge(moduleStatus(m.status))}</div><p>${escapeHtml(m.description)}</p></div>`).join('');
+      byId('detailBacklog').textContent=[t.mapBacklog && `${historical?'历史版本':'当前版本'}待办\n${t.mapBacklog}`,t.mapRisks && `风险提醒\n${t.mapRisks}`,t.backlog && `个人备注（保留原记录）\n${t.backlog}`].filter(Boolean).join('\n\n') || '没有待办。'; drawMap(t.modules, t.relationships); if(!byId('detail').open)byId('detail').showModal();
+    }
+    function setMapView(view){
+      const available=Boolean(displayedTool&&frameworkFor(displayedTool));
+      const overview=available&&view==='framework';
+      byId('productFramework').hidden=!overview;
+      byId('maintenanceView').hidden=overview;
+      byId('showFramework').setAttribute('aria-pressed',String(overview));
+      byId('showMaintenance').setAttribute('aria-pressed',String(!overview));
+    }
+    function frameworkFor(tool){return isWuyou(tool)?window.ATLAS_PRODUCT_FRAMEWORK:tool.framework;}
+    function renderProductFramework(tool){
+      const framework=frameworkFor(tool);
+      const available=Boolean(framework);
+      byId('mapViewTabs').hidden=!available;
+      if(!available){setMapView('maintenance');return;}
+      const features=new Set(tool.modules.flatMap(module=>(module.features||[]).map(feature=>feature.name)));
+      byId('productFramework').innerHTML=`<div class="framework-intro"><h3>${escapeHtml(tool.name)} · 网站功能框架</h3><p>${escapeHtml(framework.description)}</p><p class="framework-note">对应地图 ${escapeHtml(tool.version)} · 按页面职责组织。标为“框架目标”或“该版未识别”的条目不算已实现；源码识别不等于线上验收。</p></div>${framework.sections.map(section=>`<section class="framework-section"><div class="framework-section-head"><h3>${escapeHtml(section.title)}</h3><span class="tag mapped">${escapeHtml(section.audience)}</span></div><div class="framework-pages">${section.pages.map(page=>`<article class="framework-page"><h3>${escapeHtml(page.name)}</h3><p class="purpose">${escapeHtml(page.purpose)}</p><ul class="framework-features">${page.items.map(item=>`<li>${escapeHtml(item.text)}${item.planned?'<span class="planned-label">框架目标，待完善</span>':!features.has(item.feature)?'<span class="planned-label">该版未识别</span>':''}</li>`).join('')}</ul><p class="framework-note">${escapeHtml(page.note)}</p><button type="button" class="small-link" data-framework-group="${escapeHtml(page.group)}">查看对应模块 →</button></article>`).join('')}</div></section>`).join('')}`;
+      byId('productFramework').querySelectorAll('[data-framework-group]').forEach(button=>button.addEventListener('click',()=>{
+        const index=tool.modules.findIndex(module=>module.name===button.dataset.frameworkGroup);
+        if(index<0)return;
+        setMapView('maintenance');selectModule(tool,index);
+        byId('selectedModuleTitle').setAttribute('tabindex','-1');byId('selectedModuleTitle').focus();
+      }));
+      setMapView('framework');
+    }
+    function selectModule(tool,index){
+      const module=tool.modules[index];
+      byId('modulePicker').querySelectorAll('[data-module-index]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.moduleIndex)===index)));
+      const dependencies=(module.dependsOn||[]).map(name=>({name,index:tool.modules.findIndex(item=>item.name===name)})).filter(item=>item.index>=0);
+      byId('moduleDetail').innerHTML=`<h3 id="selectedModuleTitle">${escapeHtml(module.name)}</h3><p>${escapeHtml(module.description)}</p><p class="muted">使用者：${escapeHtml(module.audience||'待补充')}</p><div class="backlog">修改提醒：${escapeHtml(module.attention||'待补充')}</div><p class="atlas-note">${module.features?.length||0} 项功能条目 · 展开查看功能说明。标记“待开发”的条目不属于已实现能力。</p>${dependencies.length?`<div class="connections"><span>会用到 →</span>${dependencies.map(item=>`<button type="button" data-dependency="${item.index}">${escapeHtml(item.name)}</button>`).join('')}</div>`:''}${(module.features||[]).map((feature,i)=>`<details class="feature-row"><summary>${i+1}. ${escapeHtml(feature.name)}${feature.status==='待开发'?` ${badge('planned')}`:''}</summary><p>${escapeHtml(feature.description)}</p></details>`).join('')}`;
+      byId('moduleDetail').querySelectorAll('[data-dependency]').forEach(button=>button.addEventListener('click',()=>{selectModule(tool,Number(button.dataset.dependency));byId('selectedModuleTitle').setAttribute('tabindex','-1');byId('selectedModuleTitle').focus();}));
+    }
+    function drawMap(modules, relationships=[]){
+      const svg=byId('mapSvg'); const count=modules.length; const columns=Math.min(3,Math.max(1,count)); const rows=Math.ceil(count/columns); const height=Math.max(190,rows*110+60); svg.setAttribute('viewBox',`0 0 650 ${height}`);
+      const positions=new Map(modules.map((m,i)=>{const col=i%columns,row=Math.floor(i/columns);return [m.name,{x:90+col*(470/Math.max(1,columns-1)),y:65+row*110}]}));
+      const edges=relationships.length ? relationships : modules.slice(1).map((m,i)=>[modules[i].name,m.name]);
+      let output=edges.map(([from,to])=>{const a=positions.get(from),b=positions.get(to);return a&&b?`<line class="edge" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`:''}).join('');
+      output+=modules.map(m=>{const point=positions.get(m.name);return `<g class="node"><rect x="${point.x-62}" y="${point.y-32}" width="124" height="64" rx="10"/><text x="${point.x}" y="${point.y-7}">${escapeHtml(m.name).slice(0,10)}<tspan class="small" x="${point.x}" dy="19">${escapeHtml(m.status)}</tspan></text></g>`;}).join('');
+      svg.innerHTML=output || '<text x="325" y="100" text-anchor="middle">还没有功能模块</text>';
+    }
+    byId('addTool').addEventListener('click',()=>openEditor());
+    byId('mapVersionSelect').addEventListener('change',event=>showDetail(selectedId,event.target.value));
+    byId('showFramework').addEventListener('click',()=>setMapView('framework'));
+    byId('showMaintenance').addEventListener('click',()=>setMapView('maintenance'));
+    document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>byId(b.dataset.close).close()));
+    byId('toolForm').addEventListener('submit',(event)=>{ event.preventDefault(); const form=event.currentTarget; const fields=form.elements; const value=key=>fields.namedItem(key).value; const id=form.dataset.id; const existing=id?tools.find(t=>t.id===id):null; const modules=parseModules(value('modules')).map(module=>({...existing?.modules.find(old=>old.name===module.name),...module})); const item={...existing,id:id||crypto.randomUUID(),sourceKey:existing?.sourceKey||null,name:value('name').trim(),version:value('version').trim(),url:value('url').trim(),description:value('description').trim(),status:value('status'),checkedAt:value('checkedAt'),modules,relationships:existing?.relationships||[],backlog:value('backlog').trim()}; if(id) tools=tools.map(t=>t.id===id?item:t); else tools.push(item); save(); byId('editor').close(); render(); if(id){ byId('detail').close(); showDetail(id); } });
+    byId('editTool').addEventListener('click',()=>{ if(byId('editTool').disabled)return; byId('detail').close(); openEditor(selectedId); });
+    byId('deleteTool').addEventListener('click',()=>{ if(byId('deleteTool').disabled)return; const t=tools.find(x=>x.id===selectedId); if(confirm(`确定删除“${t.name}”的地图吗？这不会影响线上网站。`)){ if(t.sourceKey)localStorage.setItem('code-map-atlas-imported:'+t.sourceKey,'1'); tools=tools.filter(x=>x.id!==selectedId); save(); byId('detail').close(); render(); } });
+    render();
+  </script>
+</body>
+</html>
